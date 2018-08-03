@@ -508,6 +508,7 @@ static ZFDownloadManager *sharedDownloadManager = nil;
             file.fileType = [file.fileName pathExtension];
             file.fileSize = [dic objectForKey:@"filesize"];
             file.time = [dic objectForKey:@"time"];
+            file.fileURL = [dic objectForKey:@"fileUrl"];
             file.fileimage = [UIImage imageWithData:[dic objectForKey:@"fileimage"]];
             [_finishedlist addObject:file];
         }
@@ -525,7 +526,7 @@ static ZFDownloadManager *sharedDownloadManager = nil;
         NSDictionary *filedic = [NSDictionary dictionaryWithObjectsAndKeys: fileinfo.fileName,@"filename",
                                  fileinfo.time,@"time",
                                  fileinfo.fileSize,@"filesize",
-                                 imagedata,@"fileimage", nil];
+                                 imagedata,@"fileimage", fileinfo.fileURL, @"fileUrl", nil];
         [finishedinfo addObject:filedic];
     }
     
