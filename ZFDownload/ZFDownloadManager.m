@@ -103,7 +103,7 @@ static ZFDownloadManager *sharedDownloadManager = nil;
     NSDate *myDate = [NSDate date];
     _fileInfo.time = [ZFCommonHelper dateToString:myDate];
     _fileInfo.fileType = [name pathExtension];
-
+    
     _fileInfo.fileimage = image;
     _fileInfo.downloadState = ZFDownloading;
     _fileInfo.error = NO;
@@ -496,7 +496,7 @@ static ZFDownloadManager *sharedDownloadManager = nil;
 
 #pragma mark - 已完成的下载任务在这里处理
 /*
-	将本地已经下载完成的文件加载到已下载列表里
+ 将本地已经下载完成的文件加载到已下载列表里
  */
 - (void)loadFinishedfiles
 {
@@ -508,7 +508,7 @@ static ZFDownloadManager *sharedDownloadManager = nil;
             file.fileType = [file.fileName pathExtension];
             file.fileSize = [dic objectForKey:@"filesize"];
             file.time = [dic objectForKey:@"time"];
-            file.fileURL = [dic objectForKey:@"fileUrl"];
+            file.fileURL = [dic objectForKey:@"fileurl"];
             file.fileimage = [UIImage imageWithData:[dic objectForKey:@"fileimage"]];
             [_finishedlist addObject:file];
         }
@@ -523,10 +523,26 @@ static ZFDownloadManager *sharedDownloadManager = nil;
     
     for (ZFFileModel *fileinfo in _finishedlist) {
         NSData *imagedata = UIImagePNGRepresentation(fileinfo.fileimage);
-        NSDictionary *filedic = [NSDictionary dictionaryWithObjectsAndKeys: fileinfo.fileName,@"filename",
-                                 fileinfo.time,@"time",
-                                 fileinfo.fileSize,@"filesize",
-                                 imagedata,@"fileimage", fileinfo.fileURL, @"fileUrl", nil];
+        NSString *fileName = fileinfo.fileName;
+        NSString *time = fileinfo.time;
+        NSString *fileSize = fileinfo.fileSize;
+        NSString *fileUrl = fileinfo.fileURL;
+        NSMutableDictionary *filedic = [NSMutableDictionary dictionary];
+        if (fileName) {
+            filedic[@"filename"] = fileName;
+        }
+        if (time) {
+            filedic[@"time"] = time;
+        }
+        if (fileSize) {
+            filedic[@"filesize"] = fileSize;
+        }
+        if (fileUrl) {
+            filedic[@"fileurl"] = fileUrl;
+        }
+        if (imagedata) {
+            filedic[@"fileimage"] = imagedata;
+        }
         [finishedinfo addObject:filedic];
     }
     
@@ -622,7 +638,7 @@ static ZFDownloadManager *sharedDownloadManager = nil;
     if (minutes > 0) {[remainingTimeStr appendFormat:@"%zd分 ",minutes];}
     if (seconds > 0) {[remainingTimeStr appendFormat:@"%.1f秒",seconds];}
     fileInfo.remainingTime = remainingTimeStr;
-
+    
     if([self.downloadDelegate respondsToSelector:@selector(updateCellProgress:)]) {
         [self.downloadDelegate updateCellProgress:request];
     }
